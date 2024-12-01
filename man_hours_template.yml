@@ -1,0 +1,49 @@
+# 余った時間を埋める工数の設定
+default:
+  project: P000000-00 # プロジェクトコード
+  process: 有給 # 工数名(プロジェクト選択後に選択する項目)
+
+# 年:
+#   月:
+#    何週目: (1, 2, 3, ..)
+#      曜日: (mon, tue, wed, thu, fri)
+#        - project: プロジェクトコード (P000000-00)
+#          process: 工数名(プロジェクト選択後に選択する項目)
+#          hour: 時間
+
+man_hours:
+  2024:
+    12:
+      1:
+        mon:
+        tue:
+        wed:
+        thu:
+        fri:
+          - project: P000000-00
+            process: 有給
+            hour: 0.75
+      2:
+        mon:
+        tue:
+        wed:
+        thu:
+        fri:
+      3:
+        mon:
+        tue:
+        wed:
+        thu:
+        fri:
+      4:
+        mon:
+        tue:
+        wed:
+        thu:
+        fri:
+      5:
+        mon:
+        tue:
+        wed:
+        thu:
+        fri:
