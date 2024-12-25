@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+require 'yaml'
+require 'date'
+require_relative 'obpm'
+
+class OBPMUpdator
+  CWDAY = {
+    mon: 1,
+    tue: 2,
+    wed: 3,
+    thu: 4,
+    fri: 5,
+  }.freeze
+
+  def initialize(definition_file)
+    f = load_file(definition_file)
+    @man_hours = f['man_hours']
+    @default = f['default']
+    @obpm = OBPM.new
+  end
+
+  def execute
+    @man_hours.each do |year, month_data|
+      month_data.each do |month, week_data|
+        week_data.each do |week_idx, day_data|
+          day_data.each do |day, man_hours_in_day|
+            date = date_of(year, month, week_idx, day)
+            next if date.year != year
+            next if date.month != month
+
+            man_hours_in_day&.each do |man_hour|
+              @obpm.set(date, man_hour['project'], man_hour['process'], man_hour['hour'])
+            end
+            @obpm.fill(date, @default['project'], @default['process'])
+          end
+        end
+      end
+    end
+  end
+
+  private
+
+  def date_of(year, month, week_idx, day)
+    Date.commercial(year, Date.new(year, month).cweek + week_idx - 1, CWDAY[day.to_sym])
+  end
+
+  def load_file(definition_file)
+    YAML.load_file(definition_file)
+  end
+end
