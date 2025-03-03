@@ -1,7 +1,6 @@
-# frozen_string_literal: true
 require 'yaml'
 require 'date'
-require_relative 'obpm'
+require_relative 'obpm_web'
 
 class OBPMUpdator
   CWDAY = {
@@ -16,7 +15,11 @@ class OBPMUpdator
     f = load_file(definition_file)
     @man_hours = f['man_hours']
     @default = f['default']
-    @obpm = OBPM.new
+    @obpm = ObpmWeb.new(
+      id: ENV.fetch('OBPM_ID'),
+      password: ENV.fetch('OBPM_PASSWORD'),
+      company_id: ENV.fetch('OBPM_COMPANY_ID')
+    )
   end
 
   def execute
@@ -29,9 +32,9 @@ class OBPMUpdator
             next if date.month != month
 
             man_hours_in_day&.each do |man_hour|
-              @obpm.set(date, man_hour['project'], man_hour['process'], man_hour['hour'])
+              @obpm.input(date, man_hour['project'], man_hour['process'], man_hour['hour'])
             end
-            @obpm.fill(date, @default['project'], @default['process'])
+            @obpm.input(date, @default['project'], @default['process'])
           end
         end
       end
