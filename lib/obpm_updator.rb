@@ -41,7 +41,8 @@ class OBPMUpdator
   private
 
   def date_of(year, month, week_idx, day)
-    Date.commercial(year, Date.new(year, month).cweek + week_idx - 1, CWDAY[day.to_sym])
+    first_day = Date.new(year, month, 1)
+    first_day + (week_idx - 1) * 7 + (CWDAY[day.to_sym] - first_day.wday)
   end
 
   def load_file(definition_file)
